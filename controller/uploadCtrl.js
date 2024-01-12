@@ -34,7 +34,6 @@ const deleteImages = asyncHandler(async (req, res) => {
         images.push(element);
       }
     });
-    console.log(images);
     res.json(images);
   } catch (error) {
     throw new Error(error);

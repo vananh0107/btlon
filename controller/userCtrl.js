@@ -2,14 +2,12 @@ const User = require('../models/userModel');
 const Product = require('../models/productModel');
 const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
-const uniqid = require('uniqid');
 const asyncHandler = require('express-async-handler');
 const generateToken = require('../config/jwtToken');
 const validateMongoDbId = require('../utils/validateMongodbId');
 const generateRefreshToken = require('../config/refreshToken');
 const jwt = require('jsonwebtoken');
 const { ObjectId } = require('mongodb');
-const crypto = require('crypto');
 const createUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
   const findUser = await User.findOne({ email: email });
@@ -60,7 +58,7 @@ const logoutUser = asyncHandler(async (req, res) => {
       httpOnly: true,
       secure: true,
     });
-    return res.sendStatus(204); //forbidden
+    return res.sendStatus(204);
   }
   await User.findOneAndUpdate(refreshToken, {
     refreshToken: '',
@@ -69,7 +67,7 @@ const logoutUser = asyncHandler(async (req, res) => {
     httpOnly: true,
     secure: true,
   });
-  res.sendStatus(204); //forbidden
+  res.sendStatus(204);
 });
 
 //handle refresh token
@@ -99,47 +97,12 @@ const getallUser = asyncHandler(async (req, res) => {
   }
 });
 
-//get single user
-
-const getUser = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  validateMongoDbId(id);
-  try {
-    const getUser = await User.findById(id);
-    res.json({ getUser });
-  } catch (err) {
-    throw new Error(err);
-  }
-});
-
 //delete cart
 const deleteOrder = asyncHandler(async (req, res) => {
   const { id } = req.params;
   try {
     const deleteOrder = await Order.findByIdAndDelete(id);
     res.json({ deleteOrder });
-  } catch (err) {
-    throw new Error(err);
-  }
-});
-//update user
-const updateUser = asyncHandler(async (req, res) => {
-  const { _id } = req.user;
-  validateMongoDbId(_id);
-  try {
-    const updateUser = await User.findByIdAndUpdate(
-      _id,
-      {
-        firstname: req.body?.firstname,
-        lastname: req.body?.lastname,
-        email: req.body?.email,
-        mobile: req.body?.mobile,
-      },
-      {
-        new: true,
-      }
-    );
-    res.json({ updateUser });
   } catch (err) {
     throw new Error(err);
   }
@@ -341,102 +304,12 @@ const getAllOrder = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
-
-const getMonthIncome = asyncHandler(async (req, res) => {
-  const arrayMonth = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  let d = new Date();
-  let endDate = '';
-  d.setDate(1);
-  for (let index = 0; index < 11; index++) {
-    d.setMonth(d.getMonth() - 1);
-    endDate = arrayMonth[d.getMonth()] + ' ' + d.getFullYear();
-  }
-  const data = await Order.aggregate([
-    {
-      $match: {
-        paidAt: {
-          $lte: new Date(),
-          $gte: new Date(endDate),
-        },
-      },
-    },
-    {
-      $group: {
-        _id: {
-          month: '$month',
-        },
-        amount: { $sum: '$totalPriceAfterDiscount' },
-        count: { $sum: 1 },
-      },
-    },
-  ]);
-  res.json(data);
-});
-const getYearOrderCount = asyncHandler(async (req, res) => {
-  const arrayMonth = [
-    'January',
-    'February',
-    'March',
-    'April',
-    'May',
-    'June',
-    'July',
-    'August',
-    'September',
-    'October',
-    'November',
-    'December',
-  ];
-  let d = new Date();
-  let endDate = '';
-  d.setDate(1);
-  for (let index = 0; index < 11; index++) {
-    d.setMonth(d.getMonth() - 1);
-    endDate = arrayMonth[d.getMonth()] + ' ' + d.getFullYear();
-  }
-  const data = await Order.aggregate([
-    {
-      $match: {
-        paidAt: {
-          $lte: new Date(),
-          $gte: new Date(endDate),
-        },
-      },
-    },
-    {
-      $group: {
-        _id: null,
-        count: { $sum: 1 },
-        avarage: { $avg: '$totalPriceAfterDiscount' },
-        amount: { $sum: '$totalPriceAfterDiscount' },
-      },
-    },
-  ]);
-  res.json(data);
-});
 module.exports = {
-  getYearOrderCount,
   createUser,
   loginUserCtrl,
   getallUser,
-  getUser,
-  updateUser,
   handlerRefreshToken,
   logoutUser,
-  loginAdmin,
   userCart,
   getUserCart,
   emptyCart,
@@ -446,5 +319,4 @@ module.exports = {
   getAllOrder,
   deleteOrder,
   getOrder,
-  getMonthIncome,
 };

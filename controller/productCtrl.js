@@ -1,6 +1,5 @@
 const Product = require('../models/productModel');
 const PCategory = require('../models/categoryModel');
-const Color = require('../models/colorModel');
 const asyncHandler = require('express-async-handler');
 const slugify = require('slugify');
 const User = require('../models/userModel');
@@ -11,40 +10,6 @@ const createProduct = asyncHandler(async (req, res) => {
     }
     const newProduct = await Product.create(req.body);
     res.json(newProduct);
-  } catch (err) {
-    throw new Error(err);
-  }
-});
-const createColor = asyncHandler(async (req, res) => {
-  try {
-    const newColor = await Color.create(req.body);
-    res.json(newColor);
-  } catch (err) {
-    throw new Error(err);
-  }
-});
-const getColor = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  try {
-    const color = await Color.findById(id);
-    res.json(color);
-  } catch (err) {
-    throw new Error(err);
-  }
-});
-const getAllColor = asyncHandler(async (req, res) => {
-  try {
-    const newColor = await Color.find();
-    res.json(newColor);
-  } catch (err) {
-    throw new Error(err);
-  }
-});
-const deleteColor = asyncHandler(async (req, res) => {
-  const { id } = req.params;
-  try {
-    const deleteColor = await Color.findByIdAndDelete(id);
-    res.json(deleteColor);
   } catch (err) {
     throw new Error(err);
   }
@@ -147,9 +112,5 @@ module.exports = {
   getAllProduct,
   updateProduct,
   deleteProduct,
-  createColor,
-  getAllColor,
-  deleteColor,
-  getColor,
   getQuantityProductCat,
 };
