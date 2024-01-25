@@ -124,14 +124,14 @@ const userCart = asyncHandler(async (req, res) => {
         products.push(product);
       });
     }
+    else{
+      products=cart
+    }
     for (let i = 0; i < cart.length; i++) {
       let object = {};
       let sameProduct = -1;
       products.forEach((product, index) => {
-        if (
-          product.product.toString() === cart[i]._id &&
-          product.color == cart[i].color
-        ) {
+        if (product.product.toString() === cart[i]._id) {
           sameProduct = index;
         }
       });
@@ -141,13 +141,13 @@ const userCart = asyncHandler(async (req, res) => {
       } else {
         object.product = cart[i]._id;
         object.count = cart[i].count;
-        object.color = cart[i].color;
         object.title = cart[i].title;
         object.description = cart[i].description;
         let getPrice = await Product.findById(cart[i]._id);
         object.price = getPrice.price;
         products.push(object);
       }
+      console.log(object);
       if (alreadyExsistCart) {
         newCart = await Cart.findByIdAndUpdate(
           alreadyExsistCart._id,
@@ -166,8 +166,10 @@ const userCart = asyncHandler(async (req, res) => {
         }).save();
       }
     }
+    console.log(alreadyExsistCart.products);
     res.json(newCart);
-  } catch (err) {
+  } 
+  catch (err) {
     throw new Error(err);
   }
 });
