@@ -1,8 +1,6 @@
 const Product = require('../models/productModel');
-const PCategory = require('../models/categoryModel');
 const asyncHandler = require('express-async-handler');
 const slugify = require('slugify');
-const User = require('../models/userModel');
 const createProduct = asyncHandler(async (req, res) => {
   try {
     if (req.body.title) {
@@ -90,27 +88,10 @@ const getAllProduct = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
-const getQuantityProductCat = asyncHandler(async (req, res) => {
-  try {
-    const count = await Product.aggregate([
-      {
-        $group: {
-          _id: '$category',
-          count: { $sum: 1 },
-        },
-      },
-      { $sort: { title: 1, _id: 1 } },
-    ]);
-    res.json(count);
-  } catch (err) {
-    throw new Error(err);
-  }
-});
 module.exports = {
   createProduct,
   getProduct,
   getAllProduct,
   updateProduct,
   deleteProduct,
-  getQuantityProductCat,
 };

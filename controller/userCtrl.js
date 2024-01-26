@@ -18,7 +18,6 @@ const createUser = asyncHandler(async (req, res) => {
     throw new Error('User are already exists');
   }
 });
-
 const loginUserCtrl = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
   const findUser = await User.findOne({ email });
