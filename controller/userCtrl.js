@@ -7,7 +7,6 @@ const generateToken = require('../config/jwtToken');
 const validateMongoDbId = require('../utils/validateMongodbId');
 const generateRefreshToken = require('../config/refreshToken');
 const jwt = require('jsonwebtoken');
-const { ObjectId } = require('mongodb');
 const createUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
   const findUser = await User.findOne({ email: email });
@@ -122,9 +121,8 @@ const userCart = asyncHandler(async (req, res) => {
         cartTotal += product.price * product.count;
         products.push(product);
       });
-    }
-    else{
-      products=cart
+    } else {
+      products = cart;
     }
     for (let i = 0; i < cart.length; i++) {
       let object = {};
@@ -167,8 +165,7 @@ const userCart = asyncHandler(async (req, res) => {
     }
     console.log(alreadyExsistCart.products);
     res.json(newCart);
-  } 
-  catch (err) {
+  } catch (err) {
     throw new Error(err);
   }
 });
@@ -262,8 +259,7 @@ const emptyCart = asyncHandler(async (req, res) => {
   }
 });
 const createOrder = asyncHandler(async (req, res) => {
-  const { shippingInfor, orderItems, totalPrice, totalPriceAfterDiscount } =
-    req.body;
+  const { shippingInfor, orderItems, totalPrice } = req.body;
   const { _id } = req.user;
   try {
     const cart = await Cart.findOneAndRemove({ orderby: _id });
@@ -271,7 +267,6 @@ const createOrder = asyncHandler(async (req, res) => {
       shippingInfor,
       orderItems,
       totalPrice,
-      totalPriceAfterDiscount,
       user: _id,
     });
     res.json({
@@ -305,6 +300,18 @@ const getAllOrder = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+const getOrdersOfUser = asyncHandler(async (req, res) => {
+  const { _id } = req.user;
+  validateMongoDbId(_id);
+  try {
+    const userorders = await Order.find({ user: _id })
+      .populate('orderItems.product')
+      .exec();
+    res.json(userorders);
+  } catch (err) {
+    throw new Error(err);
+  }
+});
 module.exports = {
   createUser,
   loginUserCtrl,
@@ -318,6 +325,7 @@ module.exports = {
   removeProductFromCart,
   updateQuantityProductFromCart,
   getAllOrder,
-  deleteOrder,
+  deleteOrder,  
   getOrder,
+  getOrdersOfUser
 };

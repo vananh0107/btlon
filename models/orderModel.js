@@ -7,10 +7,6 @@ var orderSchema = new mongoose.Schema(
       ref: 'User',
       required: true,
     },
-    month: {
-      type: String,
-      default: new Date().getMonth(),
-    },
     shippingInfor: {
       firstname: {
         type: String,
@@ -24,15 +20,7 @@ var orderSchema = new mongoose.Schema(
         type: String,
         required: true,
       },
-      city: {
-        type: String,
-        required: true,
-      },
       email: {
-        type: String,
-        required: true,
-      },
-      district: {
         type: String,
         required: true,
       },
@@ -65,10 +53,6 @@ var orderSchema = new mongoose.Schema(
     totalPrice: {
       type: Number,
       required: true,
-    },
-    orderStatus: {
-      type: String,
-      default: 'Ordered',
     },
   },
   {
