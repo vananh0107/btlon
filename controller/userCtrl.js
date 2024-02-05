@@ -341,16 +341,21 @@ const author = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDbId(id);
   try {
-    const updateUser = await User.findByIdAndUpdate(
-      id,
-      {
-        role: role,
-      },
-      {
-        new: true,
-      }
-    );
-    res.json(updateUser);
+    const { email } = req.user;
+    const adminUser = await User.findOne({ email });
+    if (adminUser.role == 'admin') {
+      const updateUser = await User.findByIdAndUpdate(
+        id,
+        {
+          role: role,
+        },
+        {
+          new: true,
+        }
+      );
+      res.json("Update successfully");
+    }
+    res.json("Update error");
   } catch (err) {
     throw new Error(err);
   }
