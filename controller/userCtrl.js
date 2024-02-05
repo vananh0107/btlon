@@ -144,7 +144,6 @@ const userCart = asyncHandler(async (req, res) => {
         object.price = getPrice.price;
         products.push(object);
       }
-      console.log(object);
       if (alreadyExsistCart) {
         newCart = await Cart.findByIdAndUpdate(
           alreadyExsistCart._id,
@@ -163,7 +162,6 @@ const userCart = asyncHandler(async (req, res) => {
         }).save();
       }
     }
-    console.log(alreadyExsistCart.products);
     res.json(newCart);
   } catch (err) {
     throw new Error(err);
@@ -312,6 +310,44 @@ const getOrdersOfUser = asyncHandler(async (req, res) => {
     throw new Error(err);
   }
 });
+const updateOrderStatus = asyncHandler(async (req, res) => {
+  const { status } = req.body;
+  const { id } = req.params;
+  validateMongoDbId(id);
+  try {
+    const updateOrderStatus = await Order.findByIdAndUpdate(
+      id,
+      {
+        orderStatus: status,
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(updateOrderStatus);
+  } catch (err) {
+    throw new Error(err);
+  }
+});
+const author = asyncHandler(async (req, res) => {
+  const { role } = req.body;
+  const { id } = req.params;
+  validateMongoDbId(id);
+  try {
+    const updateUser = await User.findByIdAndUpdate(
+      id,
+      {
+        role: role,
+      },
+      {
+        new: true,
+      }
+    );
+    res.json(updateUser);
+  } catch (err) {
+    throw new Error(err);
+  }
+});
 module.exports = {
   createUser,
   loginUserCtrl,
@@ -325,7 +361,9 @@ module.exports = {
   removeProductFromCart,
   updateQuantityProductFromCart,
   getAllOrder,
-  deleteOrder,  
+  deleteOrder,
   getOrder,
-  getOrdersOfUser
+  getOrdersOfUser,
+  updateOrderStatus,
+  author
 };

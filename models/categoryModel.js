@@ -1,4 +1,4 @@
-const mongoose = require('mongoose'); 
+const mongoose = require('mongoose');
 
 var categorySchema = new mongoose.Schema(
   {
@@ -9,8 +9,7 @@ var categorySchema = new mongoose.Schema(
       index: true,
     },
     images: {
-      type: String,
-      required: true,
+      title: String,
     },
   },
   {

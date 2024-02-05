@@ -54,6 +54,10 @@ var orderSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    orderStatus: {
+      type: String,
+      default: 'Ordered',
+    },
   },
   {
     timestraps: true,

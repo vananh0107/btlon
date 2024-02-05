@@ -45,10 +45,8 @@ const deletePCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
   validateMongoDbId(id);
   try {
-    const deletePCategory = await PCategory.findByIdAndDelete(id, req.body, {
-      new: true,
-    });
-    res.json(deletePCategory);
+    const deletePCategory = await PCategory.findByIdAndDelete(id,);
+    res.json("Delete successfully!!!");
   } catch (err) {
     throw new Error(err);
   }

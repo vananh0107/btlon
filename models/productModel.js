@@ -43,13 +43,8 @@ var productSchema = new mongoose.Schema(
     images: [
       {
         title: String,
-        postedby: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: 'Color',
-        },
       },
     ],
-    color: [],
     availablity: {
       type: String,
       default: 'In Stock',
