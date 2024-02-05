@@ -40,6 +40,7 @@ const loginUserCtrl = asyncHandler(async (req, res) => {
       email: findUser?.email,
       mobile: findUser?.mobile,
       token: generateToken(findUser?._id),
+      role: findUser.role,
     });
   } else {
     throw new Error('Invalid User');
@@ -88,8 +89,14 @@ const handlerRefreshToken = asyncHandler(async (req, res) => {
 //get all user
 const getallUser = asyncHandler(async (req, res) => {
   try {
-    const getUsers = await User.find();
-    res.json(getUsers);
+    const { email } = req.user;
+    const adminUser = await User.findOne({ email });
+    let getUsers = [];
+    if (adminUser.role == 'admin') {
+      getUsers = await User.find();
+      getUsers = getUsers.filter((e) => e.role != 'admin');
+      res.json(getUsers);
+    }
   } catch (err) {
     throw new Error(err);
   }
@@ -365,5 +372,5 @@ module.exports = {
   getOrder,
   getOrdersOfUser,
   updateOrderStatus,
-  author
+  author,
 };

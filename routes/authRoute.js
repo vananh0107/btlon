@@ -15,7 +15,8 @@ const {
   getOrder,
   getOrdersOfUser,
   updateOrderStatus,
-  author
+  author,
+  getallUser
 } = require('../controller/userCtrl');
 const { authMiddleware, isAdmin } = require('../middleware/authMiddleware');
 router.delete(
@@ -35,6 +36,7 @@ router.put('/role/:id', authMiddleware, isAdmin,author);
 router.get('/logout', logoutUser);
 router.delete('/empty-cart', authMiddleware, emptyCart);
 router.put('/order/update/:id', authMiddleware, isAdmin, updateOrderStatus);
+router.get('/all-user', authMiddleware, isAdmin, getallUser);
 router.delete(
   '/delete-product-cart/:id',
   authMiddleware,
