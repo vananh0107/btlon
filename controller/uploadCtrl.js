@@ -24,17 +24,10 @@ const uploadImages = asyncHandler(async (req, res) => {
 });
 const deleteImages = asyncHandler(async (req, res) => {
   const { id } = req.params;
-  const { data } = req.body;
-
   try {
     let images = [];
     const deleted = await cloudinaryDeleteImg(id, 'images');
-    data.forEach((element) => {
-      if (element.puclicId !== id) {
-        images.push(element);
-      }
-    });
-    res.json(images);
+    res.json("delete successfully");
   } catch (error) {
     throw new Error(error);
   }

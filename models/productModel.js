@@ -1,4 +1,8 @@
 const mongoose = require('mongoose');
+const imageSchema = new mongoose.Schema({
+  url: String,
+  publicId: String,
+});
 var productSchema = new mongoose.Schema(
   {
     title: {
@@ -42,7 +46,8 @@ var productSchema = new mongoose.Schema(
     },
     images: [
       {
-        title: String,
+        type: imageSchema,
+        required: true,
       },
     ],
     availablity: {

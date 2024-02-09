@@ -1,5 +1,8 @@
 const mongoose = require('mongoose');
-
+const imageSchema = new mongoose.Schema({
+  url: String,
+  publicId: String,
+});
 var categorySchema = new mongoose.Schema(
   {
     title: {
@@ -9,7 +12,7 @@ var categorySchema = new mongoose.Schema(
       index: true,
     },
     image: {
-      type: String,
+      type: imageSchema,
       required: true,
     },
   },
