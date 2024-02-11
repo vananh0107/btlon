@@ -124,12 +124,10 @@ const userCart = asyncHandler(async (req, res) => {
     let newCart;
     let cartTotal = 0;
     if (alreadyExsistCart) {
+      cartTotal = alreadyExsistCart.cartTotal
       alreadyExsistCart.products.forEach((product) => {
-        cartTotal += product.price * product.count;
         products.push(product);
       });
-    } else {
-      products = cart;
     }
     for (let i = 0; i < cart.length; i++) {
       let object = {};
@@ -139,7 +137,7 @@ const userCart = asyncHandler(async (req, res) => {
           sameProduct = index;
         }
       });
-      cartTotal += cart[i].price * cart[i].count;
+      cartTotal += cart[i].price * cart[i].count||0;
       if (sameProduct >= 0) {
         products[sameProduct].count += Number(cart[i].count);
       } else {
@@ -151,23 +149,23 @@ const userCart = asyncHandler(async (req, res) => {
         object.price = getPrice.price;
         products.push(object);
       }
-      if (alreadyExsistCart) {
-        newCart = await Cart.findByIdAndUpdate(
-          alreadyExsistCart._id,
-          {
-            products,
-            cartTotal,
-            orderby: user?._id,
-          },
-          { new: true }
-        );
-      } else {
-        newCart = await new Cart({
+    }
+    if (alreadyExsistCart) {
+      newCart = await Cart.findByIdAndUpdate(
+        alreadyExsistCart._id,
+        {
           products,
           cartTotal,
           orderby: user?._id,
-        }).save();
-      }
+        },
+        { new: true }
+      );
+    } else {
+      newCart = await new Cart({
+        products,
+        cartTotal,
+        orderby: user?._id,
+      }).save();
     }
     res.json(newCart);
   } catch (err) {
@@ -353,9 +351,9 @@ const author = asyncHandler(async (req, res) => {
           new: true,
         }
       );
-      res.json("Update successfully");
+      res.json('Update successfully');
     }
-    res.json("Update error");
+    res.json('Update error');
   } catch (err) {
     throw new Error(err);
   }
